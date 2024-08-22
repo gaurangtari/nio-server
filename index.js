@@ -24,7 +24,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-  res.send("Running again");
+  res.send("Running once more");
 });
 //SOKCET
 io.on("connection", (socket) => {
