@@ -6,8 +6,10 @@ import { Server } from "socket.io";
 import cors from "cors";
 
 const app = express();
-const PORT = process.env.PORT || 9090;
-const redis = new Redis();
+const PORT = 9090;
+const redis = new Redis(
+  "redis://default:jhnr76GXIDfoqtETx8GGIi9PeNqBHYwe@redis-12396.c261.us-east-1-4.ec2.redns.redis-cloud.com:12396"
+);
 const server = http.createServer(app);
 
 const io = new Server(server, {
