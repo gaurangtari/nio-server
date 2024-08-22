@@ -14,8 +14,9 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
+    credentials: false,
   },
 });
 
@@ -23,7 +24,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-  res.send("Running");
+  res.send("Running again");
 });
 //SOKCET
 io.on("connection", (socket) => {
