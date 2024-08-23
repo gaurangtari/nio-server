@@ -53,8 +53,14 @@ app.post("/joystick-data", (req, res) => {
     "data",
     JSON.stringify({ surge, sway, heave, yaw })
   );
+  
+  const messageId1 = redis.xtrim(
+    "joystickStream",
+    "MAXLEN",
+    100,
+  )
   res.status(200).send({ message: "Data added to stream", id: messageId });
-  console.log(messageId)
+  console.log(messageId,messageId1);
 });
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
