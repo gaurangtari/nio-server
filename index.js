@@ -49,7 +49,7 @@ app.post("/joystick-data", (req, res) => {
 
   const messageId = redis.xadd(
     "joystickStream",
-    "1",
+    "*",
     "data",
     JSON.stringify({ surge, sway, heave, yaw })
   );
