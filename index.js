@@ -57,7 +57,7 @@ app.post("/joystick-data", (req, res) => {
   const messageId1 = redis.xtrim(
     "joystickStream",
     "MAXLEN",
-    100,
+    5,
   )
   res.status(200).send({ message: "Data added to stream", id: messageId });
   console.log(messageId,messageId1);
