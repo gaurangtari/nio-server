@@ -49,11 +49,12 @@ app.post("/joystick-data", (req, res) => {
 
   const messageId = redis.xadd(
     "joystickStream",
-    "*",
+    "1",
     "data",
     JSON.stringify({ surge, sway, heave, yaw })
   );
   res.status(200).send({ message: "Data added to stream", id: messageId });
+  console.log(messageId)
 });
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
