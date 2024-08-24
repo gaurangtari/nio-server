@@ -61,7 +61,7 @@ app.post("/joystick-data", (req, res) => {
 
 app.post("/admin-id", (req, res) => {
   const id = req.body;
-  const adminId = redis.xadd("adminIdStream", "*", "data", adminId);
+  const adminId = redis.xadd("adminIdStream", "*", "data", id);
   res.send(200).send({ message: "id added", id });
 });
 
