@@ -59,4 +59,10 @@ app.post("/joystick-data", (req, res) => {
   console.log(messageId, messageId1);
 });
 
+app.post("/admin-id", (req, res) => {
+  const id = req.body;
+  const adminId = redis.xadd("adminIdStream", "*", "data", adminId);
+  res.send(200).send({ message: "id added", id });
+});
+
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
