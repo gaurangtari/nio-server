@@ -24,11 +24,11 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-  res.send("aug23,1014");
+  res.send("aug24/1252");
 });
 //SOKCET
 io.on("connection", (socket) => {
-    socket.emit("me", socket.id);
+  socket.emit("me", socket.id);
 
   socket.on("disconnect", () => {
     socket.broadcast.emit("callEnded");
@@ -53,14 +53,10 @@ app.post("/joystick-data", (req, res) => {
     "data",
     JSON.stringify({ surge, sway, heave, yaw })
   );
-  
-  const messageId1 = redis.xtrim(
-    "joystickStream",
-    "MAXLEN",
-    5,
-  )
+
+  const messageId1 = redis.xtrim("joystickStream", "MAXLEN", 5);
   res.status(200).send({ message: "Data added to stream", id: messageId });
-  console.log(messageId,messageId1);
+  console.log(messageId, messageId1);
 });
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
