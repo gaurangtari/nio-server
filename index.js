@@ -24,14 +24,18 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-  res.send("aug24/1252");
+  res.send("aug27/0922");
 });
 //SOKCET
 io.on("connection", (socket) => {
   socket.emit("me", socket.id);
 
+  socket.on("join-room", (room) => {
+    console.log(`user joined room ${room}`);
+  });
+
   socket.on("disconnect", () => {
-    socket.broadcast.emit("callEnded");
+    socket.broadcast.emit("  ");
   });
 
   socket.on("callUser", ({ userToCall, signalData, from, name }) => {
@@ -42,10 +46,10 @@ io.on("connection", (socket) => {
     io.to(data.to).emit("callAccepted", data.signal);
   });
 });
+
 //REDIS
 app.post("/joystick-data", (req, res) => {
   const { surge, sway, heave, yaw } = req.body;
-  console.log({ surge, sway, heave, yaw });
 
   const messageId = redis.xadd(
     "joystickStream",
@@ -59,10 +63,37 @@ app.post("/joystick-data", (req, res) => {
   console.log(messageId, messageId1);
 });
 
+//sending ID
 app.post("/admin-id", (req, res) => {
-  const id = req.body;
-  const adminId = redis.xadd("adminIdStream", "*", "data", id);
-  res.send(200).send({ message: "id added", id });
+  const { id } = req.body;
+  const adminId = redis.xadd(
+    "adminIdStream",
+    "*",
+    "data",
+    JSON.stringify({ id })
+  );
+  const adminIdDelete = redis.xtrim("adminIdStream", "MAXLEN", 2);
+  res.status(200).send({ message: "Data added to stream", id: adminId });
+  console.log(adminId, adminIdDelete);
+});
+//getting ID
+app.get("/get-admin-id", async (req, res) => {
+  try {
+    const streamData = await redis.xrange("adminIdStream", "-", "+");
+
+    const results = streamData.map(([id, fields]) => {
+      const data = {};
+      for (let i = 0; i < fields.length; i += 2) {
+        data[fields[i]] = fields[i + 1];
+      }
+      return { id, data: JSON.parse(data.data) };
+    });
+
+    res.status(200).json(results);
+  } catch (error) {
+    console.error("Error reading from Redis stream:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
