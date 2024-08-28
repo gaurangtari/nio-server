@@ -32,7 +32,7 @@ io.on("connection", (socket) => {
   console.log("im: ", socket.id)
 
   socket.on("join-room", (room, whoJoined) => {
-    socket.room(room)
+    socket.join(room)
     console.log(`${whoJoined} joined room ${room}`);
   });
 
