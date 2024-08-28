@@ -32,6 +32,7 @@ io.on("connection", (socket) => {
 
   socket.on("join-room", (room) => {
     console.log(`user joined room ${room}`);
+    socket.room(room)
   });
 
   socket.on("disconnect", () => {
@@ -47,7 +48,12 @@ io.on("connection", (socket) => {
   });
 });
 
-//REDIS
+
+
+
+//---------------------------------------------------------------------REDIS-------------------------------------------------------------------------------------
+
+
 app.post("/joystick-data", (req, res) => {
   const { surge, sway, heave, yaw } = req.body;
 
@@ -57,6 +63,7 @@ app.post("/joystick-data", (req, res) => {
     "data",
     JSON.stringify({ surge, sway, heave, yaw })
   );
+  console.log({surge, sway, heave, yaw})
 
   const messageId1 = redis.xtrim("joystickStream", "MAXLEN", 5);
   res.status(200).send({ message: "Data added to stream", id: messageId });
@@ -76,6 +83,8 @@ app.post("/admin-id", (req, res) => {
   res.status(200).send({ message: "Data added to stream", id: adminId });
   console.log(adminId, adminIdDelete);
 });
+
+
 //getting ID
 app.get("/get-admin-id", async (req, res) => {
   try {
@@ -95,5 +104,23 @@ app.get("/get-admin-id", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+//getting telemetary data
+app.get("/get-telm", async(req, res)=>{
+  try {
+    const streamData = await redis.xrange("vehicle-state", "-", "+");
+
+    const results = streamData.map(([id, fields])=>{
+      const data ={}
+      for (let i = 0; i<fields.length; i +=2) {
+        data[fields[i]] = fields[i + 1];
+      }
+      return {id, data: JSON.parse(data.data)}
+    })
+    res.status(200).json(results)
+  }catch(error){console.error("error reading from redis stream:", error);
+    res.status(500).json({message: "internal Server Error"})
+  }
+})
 
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
