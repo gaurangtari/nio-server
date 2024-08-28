@@ -26,13 +26,14 @@ app.use(bodyParser.json());
 app.get("/", (req, res) => {
   res.send("aug27/0922");
 });
-//SOKCET
+//--------------------------------------------------------------------SOKCET---------------------------------------------------------------------------
 io.on("connection", (socket) => {
   socket.emit("me", socket.id);
+  console.log("im: ", socket.id)
 
-  socket.on("join-room", (room) => {
-    console.log(`user joined room ${room}`);
+  socket.on("join-room", (room, whoJoined) => {
     socket.room(room)
+    console.log(`${whoJoined} joined room ${room}`);
   });
 
   socket.on("disconnect", () => {
