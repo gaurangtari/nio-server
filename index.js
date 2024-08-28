@@ -40,12 +40,12 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("  ");
   });
 
-  socket.on("callUser", ({ userToCall, signalData, from, name, calling }) => {
-    io.to(userToCall).emit("callUser", { signal: signalData, from, name, isCalling: calling });
+  socket.on("callUser", ({ userToCall, signalData, from, name,  }) => {
+    io.to(userToCall).emit("callUser", { signal: signalData, from, name, });
   });
 
   socket.on("answerCall", (data) => {
-    io.to(data.to).emit("callAccepted", data.signal);
+    io.to(data.to).emit("callAccepted", data.signal, data.to);
   });
 });
 
