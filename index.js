@@ -31,6 +31,8 @@ io.on("connection", (socket) => {
   socket.emit("me", socket.id);
   console.log("im: ", socket.id)
 
+  socket.emit("adminID", "aB3kC7xP2L6mN4rO8vQ0");
+
   socket.on("join-room", (room, whoJoined) => {
     socket.join(room)
     console.log(`${whoJoined} joined room ${room}`);
@@ -109,7 +111,7 @@ app.get("/get-admin-id", async (req, res) => {
 //getting telemetary data
 app.get("/get-telm", async(req, res)=>{
   try {
-    const streamData = await redis.xrange("vehicle-state", "-", "+");
+    const streamData = await redis.xrange("vehicleStateStream", "-", "+");
 
     const results = streamData.map(([id, fields])=>{
       const data ={}
