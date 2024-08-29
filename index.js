@@ -73,6 +73,16 @@ app.post("/joystick-data", (req, res) => {
   console.log(messageId, messageId1);
 });
 
+//Creating a publisher
+app.post("/publish-joystick-data",(req,res)=>{
+  const {surge,sway, heave, yaw}= req.body;
+  redis.publish("joystick-data", JSON.stringify({surge, sway, heave, yaw}), (err)=>{
+    if(err){
+      console.error(err)
+    }
+    res.status(200).send('Data published successfully');
+  })
+})
 //sending ID
 app.post("/admin-id", (req, res) => {
   const { id } = req.body;
@@ -107,6 +117,10 @@ app.get("/get-admin-id", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+
+
+
 
 //getting telemetary data
 app.get("/get-telm", async(req, res)=>{
