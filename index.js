@@ -111,15 +111,15 @@ app.get("/get-admin-id", async (req, res) => {
 //getting telemetary data
 app.get("/get-telm", async(req, res)=>{
   try {
-    const streamData = await redis.xrange("vehicleStateStream", "-", "+");
+    const streamData = await redis.xrange("vehicleStateStream", "-", "+")
 
-    const results = streamData.map(([id, fields])=>{
-      const data ={}
-      for (let i = 0; i<fields.length; i +=2) {
+    const results = streamData.map(([id, fields]) => {
+      const data = {};
+      for (let i = 0; i < fields.length; i += 2) {
         data[fields[i]] = fields[i + 1];
       }
-      return {id, data: JSON.parse(data.data)}
-    })
+      return { id, data };
+    });
     res.status(200).json(results)
   }catch(error){console.error("error reading from redis stream:", error);
     res.status(500).json({message: "internal Server Error"})
