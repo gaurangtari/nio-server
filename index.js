@@ -6,7 +6,7 @@ import cors from "cors";
 import EventEmitter from "events";
 
 const app = express();
-const PORT = 9090;
+const PORT = 8080;
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -24,7 +24,28 @@ const emitter = new EventEmitter();
 emitter.setMaxListeners(100);
 
 app.get("/", (req, res) => {
-  res.send("sep24/1530");
+  const currentDate = new Date();
+
+  const day = String(currentDate.getDate()).padStart(2, "0");
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const year = currentDate.getFullYear();
+
+  // Get day name
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const dayName = days[currentDate.getDay()];
+
+  // Get time components
+  const hours = String(currentDate.getHours()).padStart(2, "0");
+  const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+  res.send(`${day}/${month}/${year}, ${dayName}, Time: ${hours}:${minutes}`);
 });
 //--------------------------------------------------------------------SOKCET---------------------------------------------------------------------------
 io.on("connection", (socket) => {
