@@ -1,9 +1,10 @@
-import express from "express";
+ import express from "express";
 import bodyParser from "body-parser";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import EventEmitter from "events";
+import { sign } from "crypto";
 
 const app = express();
 const PORT = 8080;
@@ -62,6 +63,7 @@ io.on("connection", (socket) => {
 
   socket.on("callUser", ({ userToCall, signalData, from, name }) => {
     io.to(userToCall).emit("callUser", { signal: signalData, from, name });
+    console.log("       ", signalData, "             ");
   });
 
   socket.on("answerCall", (data) => {
@@ -71,7 +73,13 @@ io.on("connection", (socket) => {
   socket.on("hungup", ({ adminId, me }) => {
     io.to(adminId, me).emit("hungup", "cut the call");
   });
+  socket.on("callDeline", (is, to) => {
+    io.to(to).emit("callDeclined", is);
+    console.log("isDecline?:", is, "the call was by:", to);
+  });
 });
+
+//-------------------------------------------------------------------- LISTEN ------------------------------------------------------------------
 server.listen(PORT, "0.0.0.0", () =>
   console.log(`Server is running on port ${PORT}`)
 );
