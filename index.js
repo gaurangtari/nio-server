@@ -1,14 +1,19 @@
- import express from "express";
+import express from "express";
 import bodyParser from "body-parser";
-import http from "http";
+import https from "https";
 import { Server } from "socket.io";
 import cors from "cors";
 import EventEmitter from "events";
-import { sign } from "crypto";
+import fs from "fs";
 
 const app = express();
-const PORT = 8080;
-const server = http.createServer(app);
+const PORT = 8080 || 443;
+const options = {
+  key: fs.readFileSync("./localhost-key.pem"),
+  cert: fs.readFileSync("./localhost.pem"),
+};
+
+const server = https.createServer(options, app);
 
 const io = new Server(server, {
   cors: {
