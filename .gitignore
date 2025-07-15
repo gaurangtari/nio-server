@@ -1,8 +1,7 @@
 node_modules/
 .DS_Store
 .vercel
-localhost-key.pem
-localhost.crt
-localhost.csr
-localhost.key
+localhost-key.pem 
 localhost.pem
+
+

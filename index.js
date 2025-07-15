@@ -4,14 +4,14 @@ import https from "https";
 import { Server } from "socket.io";
 import cors from "cors";
 import EventEmitter from "events";
-import fs from "fs";
+import fs from "fs"
 
 const app = express();
 const PORT = 8080 || 443;
 const options = {
-  key: fs.readFileSync("./localhost-key.pem"),
-  cert: fs.readFileSync("./localhost.pem"),
-};
+	key: fs.readFileSync("/etc/letsencrypt/live/nioserver.gaurangtari.com/privkey.pem"),
+	cert: fs.readFileSync("/etc/letsencrypt/live/nioserver.gaurangtari.com/fullchain.pem"),
+  }
 
 const server = https.createServer(options, app);
 
@@ -68,7 +68,7 @@ io.on("connection", (socket) => {
 
   socket.on("callUser", ({ userToCall, signalData, from, name }) => {
     io.to(userToCall).emit("callUser", { signal: signalData, from, name });
-    console.log("       ", signalData, "             ");
+   
   });
 
   socket.on("answerCall", (data) => {
@@ -80,7 +80,7 @@ io.on("connection", (socket) => {
   });
   socket.on("callDeline", (is, to) => {
     io.to(to).emit("callDeclined", is);
-    console.log("isDecline?:", is, "the call was by:", to);
+   
   });
 });
 
